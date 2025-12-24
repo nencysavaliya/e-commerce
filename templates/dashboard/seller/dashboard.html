@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Dashboard - IndiVibe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <h2><i class="fas fa-bolt"></i> <span class="gradient-text">IndiVibe</span></h2>
+                <p class="text-muted">Seller Panel</p>
+            </div>
+
+            <ul class="sidebar-nav">
+                <li><a href="{% url 'dashboard:seller_dashboard' %}" class="active"><i class="fas fa-home"></i>
+                        Dashboard</a></li>
+                <li><a href="{% url 'dashboard:seller_products' %}"><i class="fas fa-box"></i> My Products</a></li>
+                <li><a href="{% url 'dashboard:seller_add_product' %}"><i class="fas fa-plus"></i> Add Product</a></li>
+                <li><a href="{% url 'dashboard:seller_orders' %}"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+                <hr style="border-color: rgba(255,255,255,0.1); margin: 1rem 0;">
+                <li><a href="{% url 'home' %}"><i class="fas fa-store"></i> View Store</a></li>
+                <li><a href="{% url 'accounts:profile' %}"><i class="fas fa-user"></i> Profile</a></li>
+                <li><a href="{% url 'accounts:logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-content">
+            <div class="dashboard-header">
+                <h1>Seller Dashboard</h1>
+                <p class="text-muted">Welcome back, {{ user.username }}!</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stat-cards">
+                <div class="stat-card purple">
+                    <h3><i class="fas fa-box"></i> Total Products</h3>
+                    <p class="value">{{ total_products }}</p>
+                </div>
+                <div class="stat-card green">
+                    <h3><i class="fas fa-check-circle"></i> Active</h3>
+                    <p class="value">{{ active_products }}</p>
+                </div>
+                <div class="stat-card gold">
+                    <h3><i class="fas fa-shopping-bag"></i> Orders</h3>
+                    <p class="value">{{ total_orders }}</p>
+                </div>
+                <div class="stat-card blue">
+                    <h3><i class="fas fa-rupee-sign"></i> Revenue</h3>
+                    <p class="value" style="color: var(--success);">₹{{ total_revenue }}</p>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="d-flex gap-2 mb-4">
+                <a href="{% url 'dashboard:seller_add_product' %}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add New Product
+                </a>
+                <a href="{% url 'dashboard:seller_products' %}" class="btn btn-secondary">
+                    <i class="fas fa-box"></i> Manage Products
+                </a>
+            </div>
+
+            <!-- Low Stock Alert -->
+            {% if low_stock_products %}
+            <div class="alert alert-warning mb-4">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Low Stock Alert!</strong> {{ low_stock_products.count }} product(s) have low stock.
+            </div>
+            {% endif %}
+
+            <!-- Recent Orders -->
+            <div class="card" style="padding: 1.5rem;">
+                <div class="d-flex justify-between align-center mb-3">
+                    <h3><i class="fas fa-history"></i> Recent Orders</h3>
+                    <a href="{% url 'dashboard:seller_orders' %}" class="btn btn-secondary btn-sm">View All</a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Order #</th>
+                                <th>Customer</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in recent_orders %}
+                            <tr>
+                                <td><strong>{{ order.order_number }}</strong></td>
+                                <td>{{ order.user.username }}</td>
+                                <td>
+                                    <span
+                                        class="badge badge-{% if order.order_status == 'delivered' %}success{% elif order.order_status == 'shipped' %}primary{% else %}warning{% endif %}">
+                                        {{ order.order_status|title }}
+                                    </span>
+                                </td>
+                                <td class="text-muted">{{ order.created_at|date:"M d, Y" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">No orders yet</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

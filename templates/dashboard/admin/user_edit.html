@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit User - {{ edited_user.username }} | IndiVibe Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <h2><i class="fas fa-bolt"></i> <span class="gradient-text">IndiVibe</span></h2>
+                <p class="text-muted">Admin Panel</p>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="{% url 'dashboard:admin_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="{% url 'dashboard:admin_users' %}" class="active"><i class="fas fa-users"></i> Users</a>
+                </li>
+                <li><a href="{% url 'dashboard:admin_products' %}"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="{% url 'dashboard:admin_categories' %}"><i class="fas fa-tags"></i> Categories</a></li>
+                <li><a href="{% url 'dashboard:admin_orders' %}"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+                <li><a href="{% url 'dashboard:admin_coupons' %}"><i class="fas fa-ticket-alt"></i> Coupons</a></li>
+                <li><a href="{% url 'dashboard:admin_reviews' %}"><i class="fas fa-star"></i> Reviews</a></li>
+                <li><a href="{% url 'home' %}"><i class="fas fa-store"></i> View Store</a></li>
+            </ul>
+        </aside>
+
+        <main class="dashboard-content">
+            <div class="dashboard-header">
+                <h1><i class="fas fa-user-edit"></i> Edit User: {{ edited_user.username }}</h1>
+            </div>
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+
+            <div class="card" style="padding: 2rem; max-width: 700px;">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- Current Profile Image -->
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        {% if edited_user.profile_image %}
+                        <img src="{{ edited_user.profile_image.url }}" alt="{{ edited_user.username }}"
+                            style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary);">
+                        {% else %}
+                        <div
+                            style="width: 120px; height: 120px; border-radius: 50%; background: var(--primary-gradient); margin: 0 auto; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user" style="font-size: 3rem; color: white;"></i>
+                        </div>
+                        {% endif %}
+                        <p class="text-muted mt-2">{{ edited_user.username }}</p>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">First Name</label>
+                            <input type="text" name="first_name" value="{{ edited_user.first_name }}"
+                                class="form-control" placeholder="First Name">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" name="last_name" value="{{ edited_user.last_name }}" class="form-control"
+                                placeholder="Last Name">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" value="{{ edited_user.email }}" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input type="text" name="phone" value="{{ edited_user.phone|default:'' }}" class="form-control"
+                            placeholder="Phone Number">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Profile Image</label>
+                        <input type="file" name="profile_image" class="form-control" accept="image/*">
+                        <small class="text-muted">Leave empty to keep current image</small>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input type="hidden" name="is_seller" value="0">
+                                <input type="checkbox" name="is_seller" id="is_seller" value="1" class="form-check-input" 
+                                {% if edited_user.is_seller %}checked{% endif %}>
+                                <label for="is_seller" class="form-label" style="margin: 0;">
+                                    <i class="fas fa-store"></i> Is Seller
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input type="hidden" name="is_active" value="0">
+                                <input type="checkbox" name="is_active" id="is_active" value="1" class="form-check-input" 
+                                    {% if edited_user.is_active %}checked{% endif %}>
+                                <label for="is_active" class="form-label" style="margin: 0;">
+                                    <i class="fas fa-check-circle"></i> Is Active
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr style="border-color: rgba(255,255,255,0.1); margin: 1.5rem 0;">
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                        <a href="{% url 'dashboard:admin_view_user' edited_user.id %}" class="btn btn-secondary">
+                            <i class="fas fa-eye"></i> View Profile
+                        </a>
+                        <a href="{% url 'dashboard:admin_users' %}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

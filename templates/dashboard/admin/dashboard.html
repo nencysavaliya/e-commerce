@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - IndiVibe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <h2><i class="fas fa-bolt"></i> <span class="gradient-text">IndiVibe</span></h2>
+                <p class="text-muted">Admin Panel</p>
+            </div>
+
+            <ul class="sidebar-nav">
+                <li><a href="{% url 'dashboard:admin_dashboard' %}" class="active"><i class="fas fa-home"></i>
+                        Dashboard</a></li>
+                <li><a href="{% url 'dashboard:admin_users' %}"><i class="fas fa-users"></i> Users</a></li>
+                <li><a href="{% url 'dashboard:admin_products' %}"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="{% url 'dashboard:admin_categories' %}"><i class="fas fa-tags"></i> Categories</a></li>
+                <li><a href="{% url 'dashboard:admin_orders' %}"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+                <li><a href="{% url 'dashboard:admin_coupons' %}"><i class="fas fa-ticket-alt"></i> Coupons</a></li>
+                <li><a href="{% url 'dashboard:admin_reviews' %}"><i class="fas fa-star"></i> Reviews</a></li>
+                <li><a href="{% url 'admin:index' %}"><i class="fas fa-cog"></i> Django Admin</a></li>
+                <hr style="border-color: rgba(255,255,255,0.1); margin: 1rem 0;">
+                <li><a href="{% url 'home' %}"><i class="fas fa-store"></i> View Store</a></li>
+                <li><a href="{% url 'accounts:logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-content">
+            <div class="dashboard-header">
+                <h1>Dashboard Overview</h1>
+                <p class="text-muted">Welcome back, {{ user.username }}!</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stat-cards">
+                <div class="stat-card purple">
+                    <h3><i class="fas fa-users"></i> Total Users</h3>
+                    <p class="value">{{ total_users }}</p>
+                </div>
+                <div class="stat-card gold">
+                    <h3><i class="fas fa-store"></i> Sellers</h3>
+                    <p class="value">{{ total_sellers }}</p>
+                </div>
+                <div class="stat-card green">
+                    <h3><i class="fas fa-box"></i> Products</h3>
+                    <p class="value">{{ total_products }}</p>
+                </div>
+                <div class="stat-card blue">
+                    <h3><i class="fas fa-shopping-bag"></i> Orders</h3>
+                    <p class="value">{{ total_orders }}</p>
+                </div>
+            </div>
+
+            <!-- Revenue Stats -->
+            <div class="stat-cards" style="grid-template-columns: repeat(2, 1fr);">
+                <div class="stat-card purple">
+                    <h3><i class="fas fa-rupee-sign"></i> Total Revenue</h3>
+                    <p class="value" style="color: var(--success);">₹{{ total_revenue }}</p>
+                </div>
+                <div class="stat-card gold">
+                    <h3><i class="fas fa-chart-line"></i> Monthly Revenue</h3>
+                    <p class="value" style="color: var(--secondary);">₹{{ monthly_revenue }}</p>
+                </div>
+            </div>
+
+            <!-- Order Status -->
+            <div class="card" style="padding: 1.5rem; margin-bottom: 2rem;">
+                <h3><i class="fas fa-tasks"></i> Order Status</h3>
+                <div class="d-flex gap-2 mt-3">
+                    <span class="badge badge-warning"><i class="fas fa-clock"></i> Pending: {{ pending_orders }}</span>
+                    <span class="badge badge-info"><i class="fas fa-check"></i> Confirmed: {{ confirmed_orders }}</span>
+                    <span class="badge badge-primary"><i class="fas fa-truck"></i> Shipped: {{ shipped_orders }}</span>
+                    <span class="badge badge-success"><i class="fas fa-check-double"></i> Delivered: {{ delivered_orders }}</span>  
+                </div>
+            </div>
+
+            <!-- Recent Orders -->
+            <div class="card" style="padding: 1.5rem;">
+                <div class="d-flex justify-between align-center mb-3">
+                    <h3><i class="fas fa-history"></i> Recent Orders</h3>
+                    <a href="{% url 'dashboard:admin_orders' %}" class="btn btn-secondary btn-sm">View All</a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Order #</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Payment</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in recent_orders %}
+                            <tr>
+                                <td><strong>{{ order.order_number }}</strong></td>
+                                <td>{{ order.user.username }}</td>
+                                <td>₹{{ order.final_amount }}</td>
+                                <td>
+                                    {% if order.payment_status == 'paid' %}
+                                    <span class="badge badge-success">Paid</span>
+                                    {% else %}
+                                    <span class="badge badge-warning">{{ order.payment_status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span
+                                        class="badge badge-{% if order.order_status == 'delivered' %}success{% elif order.order_status == 'shipped' %}primary{% elif order.order_status == 'cancelled' %}danger{% else %}warning{% endif %}">
+                                        {{ order.order_status|title }}
+                                    </span>
+                                </td>
+                                <td class="text-muted">{{ order.created_at|date:"M d, Y" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">No orders yet</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Payment - IndiVibe{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="max-width: 500px; margin: 2rem auto;">
+        <div class="card" style="padding: 2rem; text-align: center;">
+            <div style="margin-bottom: 2rem;">
+                <i class="fas fa-lock" style="font-size: 3rem; color: var(--primary);"></i>
+                <h2 class="mt-2">Secure Payment</h2>
+                <p class="text-muted">Order #{{ order.order_number }}</p>
+            </div>
+
+            <div class="card" style="padding: 1.5rem; margin-bottom: 2rem; background: var(--bg-glass);">
+                <h3 style="color: var(--secondary);">₹{{ order.final_amount }}</h3>
+                <p class="text-muted">Total Amount</p>
+            </div>
+
+            {% if not cod_only and razorpay_key_id %}
+            <!-- Razorpay Payment -->
+            <button id="rzp-button" class="btn btn-primary btn-lg" style="width: 100%; margin-bottom: 1rem;">
+                <i class="fas fa-credit-card"></i> Pay with Razorpay
+            </button>
+
+            <p class="text-muted mb-2">- OR -</p>
+            {% endif %}
+
+            <!-- Cash on Delivery -->
+            <a href="{% url 'payments:cod' order.id %}" class="btn btn-secondary btn-lg" style="width: 100%;">
+                <i class="fas fa-money-bill"></i> Cash on Delivery
+            </a>
+
+            <div class="mt-4">
+                <p class="text-muted" style="font-size: 0.9rem;">
+                    <i class="fas fa-shield-alt"></i> Your payment is secure and encrypted
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if razorpay_key_id %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    var options = {
+        "key": "{{ razorpay_key_id }}",
+        "amount": "{{ amount }}",
+        "currency": "INR",
+        "name": "IndiVibe",
+        "description": "Order #{{ order.order_number }}",
+        "order_id": "{{ razorpay_order_id }}",
+        "handler": function (response) {
+            fetch("{% url 'payments:callback' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(response)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = "{% url 'orders:order_confirmation' order.id %}";
+                    } else {
+                        window.location.href = "{% url 'payments:failed' order.id %}";
+                    }
+                });
+        },
+        "prefill": {
+            "name": "{{ user.username }}",
+            "email": "{{ user.email }}"
+        },
+        "theme": {
+            "color": "#7C3AED"
+        }
+    };
+    var rzp = new Razorpay(options);
+    document.getElementById('rzp-button').onclick = function (e) {
+        rzp.open();
+        e.preventDefault();
+    }
+</script>
+{% endif %}
+{% endblock %}

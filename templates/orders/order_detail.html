@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Details - IndiVibe{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="max-width: 900px; margin: 0 auto;">
+        <!-- Header -->
+        <div class="d-flex justify-between align-center mb-3">
+            <div>
+                <h2><i class="fas fa-receipt"></i> Order Details</h2>
+                <p class="text-muted">Order #{{ order.order_number }}</p>
+            </div>
+            <a href="{% url 'orders:order_history' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Orders
+            </a>
+        </div>
+
+        <!-- Order Status and Timeline -->
+        <div class="card mb-3" style="padding: 1.5rem;">
+            <div class="d-flex justify-between align-center mb-3">
+                <div>
+                    <h4 style="margin-bottom: 0.5rem;">Order Status</h4>
+                    <small class="text-muted">{{ order.created_at|date:"M d, Y h:i A" }}</small>
+                </div>
+                <div class="d-flex gap-2">
+                    <span
+                        class="badge badge-{% if order.payment_status == 'paid' %}success{% elif order.payment_status == 'failed' %}danger{% elif order.payment_status == 'refunded' %}info{% else %}warning{% endif %}">
+                        Payment: {{ order.payment_status|title }}
+                    </span>
+                    <span
+                        class="badge badge-{% if order.order_status == 'delivered' %}success{% elif order.order_status == 'shipped' %}primary{% elif order.order_status == 'cancelled' %}danger{% else %}info{% endif %}">
+                        {{ order.order_status|title }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Status Timeline -->
+            <div style="margin-top: 2rem;">
+                <div class="d-flex justify-between" style="position: relative;">
+                    <div class="text-center" style="flex: 1;">
+                        <div
+                            style="width: 40px; height: 40px; margin: 0 auto; background: {% if order.order_status != 'cancelled' %}var(--success){% else %}var(--danger){% endif %}; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-check" style="color: white;"></i>
+                        </div>
+                        <small class="text-muted mt-2" style="display: block;">Confirmed</small>
+                    </div>
+                    <div class="text-center" style="flex: 1;">
+                        <div
+                            style="width: 40px; height: 40px; margin: 0 auto; background: {% if order.order_status in 'processing,shipped,delivered' %}var(--success){% else %}var(--border-color){% endif %}; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-box" style="color: white;"></i>
+                        </div>
+                        <small class="text-muted mt-2" style="display: block;">Processing</small>
+                    </div>
+                    <div class="text-center" style="flex: 1;">
+                        <div
+                            style="width: 40px; height: 40px; margin: 0 auto; background: {% if order.order_status in 'shipped,delivered' %}var(--success){% else %}var(--border-color){% endif %}; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-truck" style="color: white;"></i>
+                        </div>
+                        <small class="text-muted mt-2" style="display: block;">Shipped</small>
+                    </div>
+                    <div class="text-center" style="flex: 1;">
+                        <div
+                            style="width: 40px; height: 40px; margin: 0 auto; background: {% if order.order_status == 'delivered' %}var(--success){% else %}var(--border-color){% endif %}; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-home" style="color: white;"></i>
+                        </div>
+                        <small class="text-muted mt-2" style="display: block;">Delivered</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Items -->
+        <div class="card mb-3" style="padding: 1.5rem;">
+            <h4 style="margin-bottom: 1.5rem;"><i class="fas fa-shopping-bag"></i> Order Items</h4>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items.all %}
+                        <tr>
+                            <td>
+                                {% if item.product %}
+                                <a href="{% url 'products:product_detail' item.product.slug %}">{{ item.product_name }}</a>
+                                {% else %}
+                                {{ item.product_name }}
+                                {% endif %}
+                            </td>
+                            <td>{{ item.quantity }}</td>
+                            <td>₹{{ item.price }}</td>
+                            <td><strong>₹{{ item.total_price }}</strong></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Order Summary -->
+            <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+                <div style="max-width: 400px; margin-left: auto;">
+                    <div class="d-flex justify-between mb-2">
+                        <span class="text-muted">Subtotal:</span>
+                        <span>₹{{ order.total_amount }}</span>
+                    </div>
+                    {% if order.discount_amount > 0 %}
+                    <div class="d-flex justify-between mb-2">
+                        <span class="text-muted">Discount:</span>
+                        <span class="text-success">-₹{{ order.discount_amount }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="d-flex justify-between"
+                        style="padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                        <strong>Total Amount:</strong>
+                        <strong style="font-size: 1.25rem; color: var(--primary);">₹{{ order.final_amount }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="gap: 1.5rem;">
+            <!-- Shipping Address -->
+            <div class="col-md-6">
+                <div class="card" style="padding: 1.5rem; height: 100%;">
+                    <h4 style="margin-bottom: 1rem;"><i class="fas fa-map-marker-alt"></i> Shipping Address</h4>
+                    {% if order.address %}
+                    <p style="margin-bottom: 0.5rem;"><strong>{{ order.address.name }}</strong></p>
+                    <p style="margin-bottom: 0.5rem;">{{ order.address.phone }}</p>
+                    <p style="margin-bottom: 0.5rem;">{{ order.address.address }}</p>
+                    <p style="margin-bottom: 0;">{{ order.address.city }}, {{ order.address.state }} - {{ order.address.pincode }}</p>
+                    {% else %}
+                    <p class="text-muted">No shipping address available</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Additional Information -->
+            <div class="col-md-6">
+                <div class="card" style="padding: 1.5rem; height: 100%;">
+                    <h4 style="margin-bottom: 1rem;"><i class="fas fa-info-circle"></i> Order Information</h4>
+                    <div style="margin-bottom: 0.75rem;">
+                        <small class="text-muted">Order Number:</small>
+                        <p style="margin: 0;"><strong>{{ order.order_number }}</strong></p>
+                    </div>
+                    <div style="margin-bottom: 0.75rem;">
+                        <small class="text-muted">Order Date:</small>
+                        <p style="margin: 0;">{{ order.created_at|date:"M d, Y h:i A" }}</p>
+                    </div>
+                    <div style="margin-bottom: 0.75rem;">
+                        <small class="text-muted">Last Updated:</small>
+                        <p style="margin: 0;">{{ order.updated_at|date:"M d, Y h:i A" }}</p>
+                    </div>
+                    {% if order.notes %}
+                    <div>
+                        <small class="text-muted">Notes:</small>
+                        <p style="margin: 0;">{{ order.notes }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="card mt-3" style="padding: 1.5rem;">
+            <div class="d-flex gap-2 justify-center">
+                <a href="{% url 'invoices:generate' order.id %}" class="btn btn-primary">
+                    <i class="fas fa-file-pdf"></i> Download Invoice
+                </a>
+                {% if order.order_status == 'pending' or order.order_status == 'confirmed' %}
+                <a href="{% url 'orders:cancel_order' order.id %}" class="btn btn-danger"
+                    onclick="return confirm('Are you sure you want to cancel this order?')">
+                    <i class="fas fa-times"></i> Cancel Order
+                </a>
+                {% endif %}
+                {% if order.order_status == 'delivered' %}
+                <a href="{% url 'products:product_list' %}" class="btn btn-success">
+                    <i class="fas fa-redo"></i> Order Again
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

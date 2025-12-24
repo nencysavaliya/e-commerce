@@ -1,0 +1,170 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - IndiVibe Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <h2><i class="fas fa-bolt"></i> <span class="gradient-text">IndiVibe</span></h2>
+                <p class="text-muted">Admin Panel</p>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="{% url 'dashboard:admin_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="{% url 'dashboard:admin_users' %}"><i class="fas fa-users"></i> Users</a></li>
+                <li><a href="{% url 'dashboard:admin_products' %}"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="{% url 'dashboard:admin_categories' %}"><i class="fas fa-tags"></i> Categories</a></li>
+                <li><a href="{% url 'dashboard:admin_orders' %}"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+                <li><a href="{% url 'dashboard:admin_coupons' %}" class="active"><i class="fas fa-ticket-alt"></i>
+                        Coupons</a></li>
+                <li><a href="{% url 'dashboard:admin_reviews' %}"><i class="fas fa-star"></i> Reviews</a></li>
+                <li><a href="{% url 'home' %}"><i class="fas fa-store"></i> View Store</a></li>
+            </ul>
+        </aside>
+
+        <main class="dashboard-content">
+            <div class="dashboard-header">
+                <h1><i class="fas fa-ticket-alt"></i> {{ title }}</h1>
+                <a href="{% url 'dashboard:admin_coupons' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Coupons
+                </a>
+            </div>
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+
+            <div class="card" style="padding: 2rem;">
+                <form method="post">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label class="form-label">{{ form.code.label }}</label>
+                        {{ form.code }}
+                        {% if form.code.help_text %}
+                        <small class="text-muted">{{ form.code.help_text }}</small>
+                        {% endif %}
+                        {% if form.code.errors %}
+                        <div class="text-danger">{{ form.code.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row" style="gap: 1rem;">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">{{ form.discount_type.label }}</label>
+                                {{ form.discount_type }}
+                                {% if form.discount_type.errors %}
+                                <div class="text-danger">{{ form.discount_type.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">{{ form.discount_value.label }}</label>
+                                {{ form.discount_value }}
+                                {% if form.discount_value.help_text %}
+                                <small class="text-muted">{{ form.discount_value.help_text }}</small>
+                                {% endif %}
+                                {% if form.discount_value.errors %}
+                                <div class="text-danger">{{ form.discount_value.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="gap: 1rem;">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">{{ form.min_order_amount.label }}</label>
+                                {{ form.min_order_amount }}
+                                {% if form.min_order_amount.errors %}
+                                <div class="text-danger">{{ form.min_order_amount.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">{{ form.max_discount.label }}</label>
+                                {{ form.max_discount }}
+                                {% if form.max_discount.help_text %}
+                                <small class="text-muted">{{ form.max_discount.help_text }}</small>
+                                {% endif %}
+                                {% if form.max_discount.errors %}
+                                <div class="text-danger">{{ form.max_discount.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="gap: 1rem;">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">{{ form.usage_limit.label }}</label>
+                                {{ form.usage_limit }}
+                                {% if form.usage_limit.help_text %}
+                                <small class="text-muted">{{ form.usage_limit.help_text }}</small>
+                                {% endif %}
+                                {% if form.usage_limit.errors %}
+                                <div class="text-danger">{{ form.usage_limit.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">{{ form.expiry_date.label }}</label>
+                                {{ form.expiry_date }}
+                                {% if form.expiry_date.help_text %}
+                                <small class="text-muted">{{ form.expiry_date.help_text }}</small>
+                                {% endif %}
+                                {% if form.expiry_date.errors %}
+                                <div class="text-danger">{{ form.expiry_date.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-check">
+                            {{ form.is_active }}
+                            <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                                {{ form.is_active.label }}
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Coupon
+                        </button>
+                        <a href="{% url 'dashboard:admin_coupons' %}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

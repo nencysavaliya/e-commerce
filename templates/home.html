@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}IndiVibe - Premium Shopping Experience{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-text animate-fadeIn">
+                <h1>Discover <span class="gradient-text">Premium</span> Products</h1>
+                <p>Shop the latest trends with exclusive deals. Experience the vibe of modern shopping with IndiVibe.
+                </p>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'products:product_list' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-shopping-bag"></i> Shop Now
+                    </a>
+                    <a href="#categories" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-th-large"></i> Categories
+                    </a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div style="font-size: 12rem; color: var(--primary);">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="section" style="background: var(--bg-secondary);">
+    <div class="container">
+        <div class="grid grid-4">
+            <div class="card text-center" style="padding: 2rem;">
+                <i class="fas fa-truck" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                <h4>Free Shipping</h4>
+                <p class="text-muted">On orders over ₹499</p>
+            </div>
+            <div class="card text-center" style="padding: 2rem;">
+                <i class="fas fa-undo" style="font-size: 2.5rem; color: var(--secondary); margin-bottom: 1rem;"></i>
+                <h4>Easy Returns</h4>
+                <p class="text-muted">7-day return policy</p>
+            </div>
+            <div class="card text-center" style="padding: 2rem;">
+                <i class="fas fa-shield-alt" style="font-size: 2.5rem; color: var(--success); margin-bottom: 1rem;"></i>
+                <h4>Secure Payment</h4>
+                <p class="text-muted">100% secure checkout</p>
+            </div>
+            <div class="card text-center" style="padding: 2rem;">
+                <i class="fas fa-headset" style="font-size: 2.5rem; color: var(--info); margin-bottom: 1rem;"></i>
+                <h4>24/7 Support</h4>
+                <p class="text-muted">Dedicated support</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="section" id="categories">
+    <div class="container">
+        <div class="section-header">
+            <h2><i class="fas fa-th-large"></i> Shop by Category</h2>
+            <a href="{% url 'products:product_list' %}" class="btn btn-secondary">View All</a>
+        </div>
+        <div class="grid grid-4">
+            <div class="card category-card">
+                <i class="fas fa-tshirt" style="font-size: 3rem; color: var(--primary);"></i>
+                <h4 class="mt-2">Fashion</h4>
+                <p class="text-muted">Trending styles</p>
+            </div>
+            <div class="card category-card">
+                <i class="fas fa-mobile-alt" style="font-size: 3rem; color: var(--secondary);"></i>
+                <h4 class="mt-2">Electronics</h4>
+                <p class="text-muted">Latest gadgets</p>
+            </div>
+            <div class="card category-card">
+                <i class="fas fa-home" style="font-size: 3rem; color: var(--success);"></i>
+                <h4 class="mt-2">Home & Living</h4>
+                <p class="text-muted">Decor & more</p>
+            </div>
+            <div class="card category-card">
+                <i class="fas fa-gem" style="font-size: 3rem; color: var(--info);"></i>
+                <h4 class="mt-2">Accessories</h4>
+                <p class="text-muted">Style essentials</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="section" style="background: var(--primary-gradient); text-align: center; padding: 4rem 0;">
+    <div class="container">
+        <h2 style="color: white; font-size: 2.5rem;"><i class="fas fa-percent"></i> Get 20% Off Your First Order!</h2>
+        <p style="color: rgba(255,255,255,0.8); font-size: 1.25rem; margin: 1rem 0 2rem;">
+            Sign up now and get exclusive deals delivered to your inbox.
+        </p>
+        {% if not user.is_authenticated %}
+        <a href="{% url 'accounts:register' %}" class="btn btn-secondary btn-lg">
+            <i class="fas fa-user-plus"></i> Register Now
+        </a>
+        {% else %}
+        <a href="{% url 'products:product_list' %}" class="btn btn-secondary btn-lg">
+            <i class="fas fa-shopping-bag"></i> Start Shopping
+        </a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

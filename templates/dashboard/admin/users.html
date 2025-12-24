@@ -1,0 +1,115 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users - IndiVibe Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <h2><i class="fas fa-bolt"></i> <span class="gradient-text">IndiVibe</span></h2>
+                <p class="text-muted">Admin Panel</p>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="{% url 'dashboard:admin_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="{% url 'dashboard:admin_users' %}" class="active"><i class="fas fa-users"></i> Users</a>
+                </li>
+                <li><a href="{% url 'dashboard:admin_products' %}"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="{% url 'dashboard:admin_orders' %}"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+                <li><a href="{% url 'dashboard:admin_coupons' %}"><i class="fas fa-ticket-alt"></i> Coupons</a></li>
+                <li><a href="{% url 'home' %}"><i class="fas fa-store"></i> View Store</a></li>
+            </ul>
+        </aside>
+
+        <main class="dashboard-content">
+            <div class="dashboard-header">
+                <h1><i class="fas fa-users"></i> Manage Users</h1>
+            </div>
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+
+            <div class="card" style="padding: 1.5rem;">
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Joined</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for u in users %}
+                            <tr>
+                                <td>{{ u.id }}</td>
+                                <td><strong>{{ u.username }}</strong></td>
+                                <td>{{ u.email }}</td>
+                                <td>
+                                    {% if u.is_superuser %}
+                                    <span class="badge badge-primary">Admin</span>
+                                    {% elif u.is_seller %}
+                                    <span class="badge badge-info">Seller</span>
+                                    {% else %}
+                                    <span class="badge badge-success">User</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if u.is_active %}
+                                    <span class="badge badge-success">Active</span>
+                                    {% else %}
+                                    <span class="badge badge-danger">Blocked</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-muted">{{ u.created_at|date:"M d, Y" }}</td>
+                                <td>
+                                    <div class="d-flex gap-1">
+                                        <a href="{% url 'dashboard:admin_view_user' u.id %}"
+                                            class="btn btn-sm btn-primary" title="View Profile">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{% url 'dashboard:admin_edit_user' u.id %}"
+                                            class="btn btn-sm btn-secondary" title="Edit User">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        {% if not u.is_superuser %}
+                                        <a href="{% url 'dashboard:admin_toggle_user' u.id %}"
+                                            class="btn btn-sm {% if u.is_active %}btn-danger{% else %}btn-success{% endif %}"
+                                            title="{% if u.is_active %}Block{% else %}Unblock{% endif %}">
+                                            {% if u.is_active %}<i class="fas fa-ban"></i>{% else %}<i
+                                                class="fas fa-check"></i>{% endif %}
+                                        </a>
+                                        <a href="{% url 'dashboard:admin_make_seller' u.id %}"
+                                            class="btn btn-sm {% if u.is_seller %}btn-warning{% else %}btn-info{% endif %}"
+                                            title="{% if u.is_seller %}Remove Seller{% else %}Make Seller{% endif %}">
+                                            <i class="fas fa-store"></i>
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

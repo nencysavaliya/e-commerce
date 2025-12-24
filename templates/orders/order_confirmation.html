@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Confirmed - IndiVibe{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="max-width: 600px; margin: 3rem auto; text-align: center;">
+        <div class="card" style="padding: 3rem;">
+            <div style="margin-bottom: 2rem;">
+                <div
+                    style="width: 100px; height: 100px; margin: 0 auto; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-check" style="font-size: 3rem; color: white;"></i>
+                </div>
+            </div>
+
+            <h1 class="gradient-text">Order Confirmed!</h1>
+            <p class="text-muted mb-3">Thank you for shopping with IndiVibe</p>
+
+            <div class="card" style="padding: 1.5rem; background: var(--bg-glass); margin: 2rem 0;">
+                <p class="text-muted">Order Number</p>
+                <h3>{{ order.order_number }}</h3>
+            </div>
+
+            <div class="d-flex gap-2 justify-center">
+                <span class="badge badge-{% if order.payment_status == 'paid' %}success{% else %}warning{% endif %}">
+                    {{ order.payment_status|title }}
+                </span>
+                <span class="badge badge-info">{{ order.order_status|title }}</span>
+            </div>
+
+            <p class="text-muted mt-3">
+                We'll send you updates about your order via email.
+            </p>
+
+            <div class="d-flex gap-2 justify-center mt-4">
+                <a href="{% url 'orders:order_history' %}" class="btn btn-secondary">
+                    <i class="fas fa-box"></i> View Orders
+                </a>
+                <a href="{% url 'products:product_list' %}" class="btn btn-primary">
+                    <i class="fas fa-shopping-bag"></i> Continue Shopping
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

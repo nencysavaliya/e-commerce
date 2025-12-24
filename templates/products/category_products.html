@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.name }} - IndiVibe{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav class="text-muted mb-3">
+        <a href="{% url 'home' %}">Home</a> /
+        <a href="{% url 'products:product_list' %}">Products</a> /
+        {{ category.name }}
+    </nav>
+
+    <h2><i class="fas fa-tag"></i> {{ category.name }}</h2>
+
+    {% if subcategories %}
+    <div class="d-flex gap-2 mt-3 mb-4">
+        {% for subcat in subcategories %}
+        <a href="{% url 'products:subcategory_products' category.slug subcat.slug %}" class="btn btn-secondary btn-sm">
+            {{ subcat.name }}
+        </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if products %}
+    <div class="grid grid-4">
+        {% for product in products %}
+        <div class="card product-card">
+            <a href="{% url 'products:product_detail' slug=product.slug %}">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img">
+                {% endif %}
+            </a>
+            <div class="card-body">
+                <h4 class="card-title">{{ product.name }}</h4>
+                <div class="product-price">
+                    <span class="price-current">₹{{ product.display_price }}</span>
+                </div>
+                <form action="{% url 'cart:add' product.id %}" method="post" class="mt-2">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;">
+                        <i class="fas fa-cart-plus"></i> Add to Cart
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card text-center" style="padding: 4rem;">
+        <p class="text-muted">No products in this category</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

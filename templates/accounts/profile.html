@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - IndiVibe{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="section-header">
+        <h2><i class="fas fa-user-circle"></i> My Profile</h2>
+    </div>
+
+    <div style="max-width: 800px; margin: 0 auto;">
+        <div class="row" style="gap: 1.5rem;">
+            <!-- Profile Info Card -->
+            <div class="col-md-4">
+                <div class="card" style="padding: 2rem; text-align: center;">
+                    <!-- Profile Image -->
+                    <div style="margin-bottom: 1.5rem;">
+                        {% if user.profile_image %}
+                        <img id="profileImagePreview" src="{{ user.profile_image.url }}" alt="Profile"
+                            style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        {% else %}
+                        <div id="profileImagePreview"
+                            style="width: 150px; height: 150px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                            <i class="fas fa-user" style="font-size: 4rem; color: white;"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- User Info -->
+                    <h3 style="margin-bottom: 0.5rem;">
+                        {% if user.first_name or user.last_name %}
+                        {{ user.first_name }} {{ user.last_name }}
+                        {% else %}
+                        {{ user.username }}
+                        {% endif %}
+                    </h3>
+                    <p class="text-muted" style="margin-bottom: 0.5rem;">@{{ user.username }}</p>
+
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                        <span
+                            class="badge badge-{% if user.is_superuser or user.is_staff %}danger{% elif user.is_seller %}primary{% else %}success{% endif %}">
+                            {% if user.is_superuser or user.is_staff %}
+                            <i class="fas fa-shield-alt"></i> Admin
+                            {% elif user.is_seller %}
+                            <i class="fas fa-store"></i> Seller
+                            {% else %}
+                            <i class="fas fa-user"></i> Customer
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <div style="margin-top: 1rem;">
+                        <small class="text-muted">
+                            <i class="fas fa-calendar"></i> Member since
+                            {{ user.date_joined|date:"M Y" }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Profile Form -->
+            <div class="col-md-8">
+                <div class="card" style="padding: 2rem;">
+                    <h4 style="margin-bottom: 1.5rem;"><i class="fas fa-edit"></i> Edit Profile</h4>
+
+                    <form method="post" enctype="multipart/form-data" id="profileForm">
+                        {% csrf_token %}
+
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <strong>Please correct the following errors:</strong>
+                            <ul style="margin: 0.5rem 0 0 0;">
+                                {% for field in form %}
+                                {% for error in field.errors %}
+                                <li>{{ field.label }}: {{ error }}</li>
+                                {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        <div class="row" style="gap: 1rem;">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" name="first_name" value="{{ user.first_name }}"
+                                        class="form-control" placeholder="Enter first name">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" name="last_name" value="{{ user.last_name }}"
+                                        class="form-control" placeholder="Enter last name">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" name="email" value="{{ user.email }}" class="form-control"
+                                placeholder="Enter email address" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="text" name="phone" value="{{ user.phone|default:'' }}" class="form-control"
+                                placeholder="Enter phone number">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Profile Image</label>
+                            <input type="file" name="profile_image" class="form-control" id="profileImageInput"
+                                accept="image/*">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle"></i> Recommended: Square image, at least 200x200 pixels
+                            </small>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-3">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Update Profile
+                            </button>
+                            <a href="{% url 'orders:order_history' %}" class="btn btn-secondary">
+                                <i class="fas fa-box"></i> My Orders
+                            </a>
+                            <a href="{% url 'home' %}" class="btn btn-outline">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Image preview functionality
+    document.getElementById('profileImageInput').addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const preview = document.getElementById('profileImagePreview');
+                // If preview is an img tag, update src
+                if (preview.tagName === 'IMG') {
+                    preview.src = e.target.result;
+                } else {
+                    // If preview is a div (no image exists), replace it with an img
+                    const img = document.createElement('img');
+                    img.id = 'profileImagePreview';
+                    img.src = e.target.result;
+                    img.alt = 'Profile Preview';
+                    img.style.cssText = 'width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.1);';
+                    preview.parentNode.replaceChild(img, preview);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+{% endblock %}

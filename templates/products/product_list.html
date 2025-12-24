@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}Products - IndiVibe{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="section-header">
+        <h2><i class="fas fa-shopping-bag"></i> All Products</h2>
+        <div class="d-flex gap-2 align-center">
+            <form method="get" class="d-flex gap-1">
+                <input type="text" name="q" value="{{ query|default:'' }}" class="form-control"
+                    placeholder="Search products..." style="width: 200px;">
+                <button type="submit" class="btn btn-primary btn-sm">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+            <select name="sort" class="form-control" style="width: 150px;"
+                onchange="window.location.href='?sort='+this.value">
+                <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>
+                <option value="price_low" {% if current_sort == 'price_low' %}selected{% endif %}>
+                <option value="price_high" {% if current_sort == 'price_high' %}selected{% endif %}>
+                <option value="name" {% if current_sort == 'name' %}selected{% endif %}>
+            </select>
+        </div>
+    </div>
+
+    {% if products %}
+    <div class="grid grid-4">
+        {% for product in products %}
+        <div class="card product-card animate-fadeIn">
+            {% if user.is_authenticated %}
+            <button class="wishlist-btn" onclick="toggleWishlist({{ product.id }})">
+                <i class="fas fa-heart"></i>
+            </button>
+            {% endif %}
+
+            {% if product.discount_percentage > 0 %}
+            <span class="discount-badge" style="position: absolute; top: 1rem; left: 1rem;">
+                -{{ product.discount_percentage }}%
+            </span>
+            {% endif %}
+
+            <a href="{% url 'products:product_detail' slug=product.slug %}">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img">
+                {% else %}
+                <div class="card-img"
+                    style="background: var(--bg-glass); display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-image" style="font-size: 3rem; color: var(--text-muted);"></i>
+                </div>
+                {% endif %}
+            </a>
+
+            <div class="card-body">
+                <p class="text-muted" style="font-size: 0.8rem;">{{ product.category.name }}</p>
+                <h4 class="card-title">
+                    <a href="{% url 'products:product_detail' slug=product.slug %}">{{ product.name }}</a>
+                </h4>
+
+                <div class="product-price">
+                    <span class="price-current">₹{{ product.display_price }}</span>
+                    {% if product.discount_price %}
+                    <span class="price-original">₹{{ product.price }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="d-flex gap-1 mt-2">
+                    <form action="{% url 'cart:add' product.id %}" method="post" style="flex: 1;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;" {% if not product.in_stock %} disabled{% endif %}> 
+                            {% if product.in_stock %}
+                            <i class="fas fa-cart-plus"></i> Add to Cart
+                            {% else %}
+                            Out of Stock
+                            {% endif %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if products.has_other_pages %}
+    <div class="d-flex justify-center mt-4 gap-1">
+        {% if products.has_previous %}
+        <a href="?page={{ products.previous_page_number }}" class="btn btn-secondary btn-sm">
+            <i class="fas fa-chevron-left"></i> Previous
+        </a>
+        {% endif %}
+
+        <span class="btn btn-primary btn-sm">Page {{ products.number }} of {{ products.paginator.num_pages }}</span>
+
+        {% if products.has_next %}
+        <a href="?page={{ products.next_page_number }}" class="btn btn-secondary btn-sm">
+            Next <i class="fas fa-chevron-right"></i>
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="card text-center" style="padding: 4rem;">
+        <i class="fas fa-box-open" style="font-size: 4rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
+        <h3>No products found</h3>
+        <p class="text-muted">Try adjusting your search or filters</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function toggleWishlist(productId) {
+        fetch('/wishlist/toggle/' + productId + '/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                }
+            });
+    }
+</script>
+{% endblock %}

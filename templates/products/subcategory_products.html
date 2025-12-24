@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ subcategory.name }} - IndiVibe{% endblock %}
+
+{% block content %}
+<div class="container">
+    <nav class="text-muted mb-3">
+        <a href="{% url 'home' %}">Home</a> /
+        <a href="{% url 'products:product_list' %}">Products</a> /
+        <a href="{% url 'products:category_products' category.slug %}">{{ category.name }}</a> /
+        {{ subcategory.name }}
+    </nav>
+
+    <h2>{{ subcategory.name }}</h2>
+
+    {% if products %}
+    <div class="grid grid-4 mt-3">
+        {% for product in products %}
+        <div class="card product-card">
+            <a href="{% url 'products:product_detail' slug=product.slug %}">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img">
+                {% endif %}
+            </a>
+            <div class="card-body">
+                <h4 class="card-title">{{ product.name }}</h4>
+                <div class="product-price">
+                    <span class="price-current">₹{{ product.display_price }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card text-center" style="padding: 4rem;">
+        <p class="text-muted">No products in this subcategory</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

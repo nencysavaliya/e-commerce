@@ -1,0 +1,182 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ action }} Product - IndiVibe Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <h2><i class="fas fa-bolt"></i> <span class="gradient-text">IndiVibe</span></h2>
+                <p class="text-muted">Admin Panel</p>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="{% url 'dashboard:admin_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="{% url 'dashboard:admin_users' %}"><i class="fas fa-users"></i> Users</a></li>
+                <li><a href="{% url 'dashboard:admin_products' %}" class="active"><i class="fas fa-box"></i>
+                        Products</a></li>
+                <li><a href="{% url 'dashboard:admin_categories' %}"><i class="fas fa-tags"></i> Categories</a></li>
+                <li><a href="{% url 'dashboard:admin_orders' %}"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+                <li><a href="{% url 'dashboard:admin_coupons' %}"><i class="fas fa-ticket-alt"></i> Coupons</a></li>
+                <li><a href="{% url 'dashboard:admin_reviews' %}"><i class="fas fa-star"></i> Reviews</a></li>
+                <li><a href="{% url 'home' %}"><i class="fas fa-store"></i> View Store</a></li>
+            </ul>
+        </aside>
+
+        <main class="dashboard-content">
+            <div class="dashboard-header">
+                <h1><i class="fas fa-{% if action == 'Add' %}plus{% else %}edit{% endif %}"></i> {{ action }} Product
+                </h1>
+            </div>
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+
+            <div class="card" style="padding: 2rem; max-width: 800px;">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    {% if product.image %}
+                    <div style="text-align: center; margin-bottom: 1.5rem;">
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}"
+                            style="max-width: 250px; max-height: 200px; border-radius: 12px; object-fit: cover;">
+                        <p class="text-muted mt-2">Current Image</p>
+                    </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label class="form-label">Product Name <span style="color: var(--danger);">*</span></label>
+                        <input type="text" name="name" value="{{ product.name|default:'' }}" class="form-control"
+                            placeholder="Enter product name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea name="description" class="form-control" rows="4"
+                            placeholder="Enter product description">{{ product.description|default:'' }}</textarea>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Price (₹) <span style="color: var(--danger);">*</span></label>
+                            <input type="number" name="price" value="{{ product.price|default:'' }}"
+                                class="form-control" placeholder="e.g., 999" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Discount Price (₹)</label>
+                            <input type="number" name="discount_price" value="{{ product.discount_price|default:'' }}"
+                                class="form-control" placeholder="Optional" step="0.01" min="0">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Category <span style="color: var(--danger);">*</span></label>
+                            <select name="category" id="categorySelect" class="form-control" required>
+                                <option value="">Select Category</option>
+                                {% for cat in categories %}
+                                <option value="{{ cat.id }}"
+                                    data-subcategories="{% for sub in cat.subcategories.all %}{{ sub.id }}:{{ sub.name }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                                    {% if product.category_id == cat.id %}selected{% endif %}>
+                                    {{ cat.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Subcategory</label>
+                            <select name="subcategory" id="subcategorySelect" class="form-control">
+                                <option value="">Select Subcategory (optional)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Stock Quantity</label>
+                        <input type="number" name="stock" value="{{ product.stock|default:0 }}" class="form-control"
+                            placeholder="e.g., 100" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Product Image</label>
+                        <input type="file" name="image" class="form-control" accept="image/*">
+                        {% if product.image %}
+                        <small class="text-muted">Leave empty to keep current image</small>
+                        {% else %}
+                        <small class="text-muted">Recommended: 800x800 pixels</small>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input type="hidden" name="is_active" value="0">
+                            <input type="checkbox" name="is_active" id="is_active" value="1" class="form-check-input" 
+                               {% if action == 'Add' or product.is_active %}checked{% endif %}>
+                            <label for="is_active" class="form-label" style="margin: 0;">
+                                <i class="fas fa-check-circle"></i> Is Active (Visible on store)
+                            </label>
+                        </div>
+                    </div>
+
+                    <hr style="border-color: rgba(255,255,255,0.1); margin: 1.5rem 0;">
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> {% if action == 'Add' %}Create Product{% else %}Save Changes{% endif %}
+                        </button>
+                        <a href="{% url 'dashboard:admin_products' %}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Dynamic subcategory dropdown
+        document.getElementById('categorySelect').addEventListener('change', function () {
+            const subcategorySelect = document.getElementById('subcategorySelect');
+            const selectedOption = this.options[this.selectedIndex];
+            const subcategoriesData = selectedOption.getAttribute('data-subcategories');
+
+            subcategorySelect.innerHTML = '<option value="">Select Subcategory (optional)</option>';
+
+            if (subcategoriesData) {
+                const subcategories = subcategoriesData.split(',');
+                subcategories.forEach(function (sub) {
+                    if (sub) {
+                        const parts = sub.split(':');
+                        const option = document.createElement('option');
+                        option.value = parts[0];
+                        option.textContent = parts[1];
+                        subcategorySelect.appendChild(option);
+                    }
+                });
+            }
+        });
+
+        // Trigger change on page load if editing
+        {% if product.category_id %}
+        document.getElementById('categorySelect').dispatchEvent(new Event('change'));
+        {% if product.subcategory_id %}
+        setTimeout(function () {
+            document.getElementById('subcategorySelect').value = "{{ product.subcategory_id }}";
+        }, 100);
+        {% endif %}
+        {% endif %}
+    </script>
+</body>
+
+</html>

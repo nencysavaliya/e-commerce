@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ action }} Category - IndiVibe Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <h2><i class="fas fa-bolt"></i> <span class="gradient-text">IndiVibe</span></h2>
+                <p class="text-muted">Admin Panel</p>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a href="{% url 'dashboard:admin_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="{% url 'dashboard:admin_users' %}"><i class="fas fa-users"></i> Users</a></li>
+                <li><a href="{% url 'dashboard:admin_products' %}"><i class="fas fa-box"></i> Products</a></li>
+                <li><a href="{% url 'dashboard:admin_categories' %}" class="active"><i class="fas fa-tags"></i> Categories</a></li>
+                        
+                <li><a href="{% url 'dashboard:admin_orders' %}"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+                <li><a href="{% url 'dashboard:admin_coupons' %}"><i class="fas fa-ticket-alt"></i> Coupons</a></li>
+                <li><a href="{% url 'dashboard:admin_reviews' %}"><i class="fas fa-star"></i> Reviews</a></li>
+                <li><a href="{% url 'home' %}"><i class="fas fa-store"></i> View Store</a></li>
+            </ul>
+        </aside>
+
+        <main class="dashboard-content">
+            <div class="dashboard-header">
+                <h1><i class="fas fa-{% if action == 'Add' %}plus{% else %}edit{% endif %}"></i> {{ action }} Category
+                </h1>
+            </div>
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+
+            <div class="card" style="padding: 2rem; max-width: 600px;">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    {% if category.image %}
+                    <div style="text-align: center; margin-bottom: 1.5rem;">
+                        <img src="{{ category.image.url }}" alt="{{ category.name }}"
+                            style="max-width: 200px; max-height: 150px; border-radius: 12px; object-fit: cover;">
+                        <p class="text-muted mt-2">Current Image</p>
+                    </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label class="form-label">Category Name <span style="color: var(--danger);">*</span></label>
+                        <input type="text" name="name" value="{{ category.name|default:'' }}" class="form-control"
+                            placeholder="e.g., Electronics, Clothing, Home & Garden" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Category Image</label>
+                        <input type="file" name="image" class="form-control" accept="image/*">
+                        {% if category.image %}
+                        <small class="text-muted">Leave empty to keep current image</small>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input type="hidden" name="is_active" value="0">
+                            <input type="checkbox" name="is_active" id="is_active" value="1" class="form-check-input" 
+                              {% if action == 'Add' or category.is_active %}checked{% endif %}>
+                            <label for="is_active" class="form-label" style="margin: 0;">
+                                <i class="fas fa-check-circle"></i> Is Active
+                            </label>
+                        </div>
+                    </div>
+
+                    <hr style="border-color: rgba(255,255,255,0.1); margin: 1.5rem 0;">
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> {% if action == 'Add' %}Create Category{% else %}Save Changes{% endif %}
+                        </button>
+                        <a href="{% url 'dashboard:admin_categories' %}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>
