@@ -4,3 +4,4 @@ Pillow>=10.0
 razorpay>=1.4
 reportlab>=4.0
 python-slugify>=8.0
+gunicorn>=20.1.0
