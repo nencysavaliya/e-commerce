@@ -1,16 +1,15 @@
-# Python cache files
+# Python cache
 __pycache__/
 *.py[cod]
-*$py.class
-*.pyc
+
+# Environment variables
+.env
 
 # Database
 *.sqlite3
-db.sqlite3
-db.sqlite3-journal
 media/
 
-# Virtual environment
+# Virtual environments
 venv/
 env/
 ENV/
