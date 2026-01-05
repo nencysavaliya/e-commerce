@@ -33,25 +33,33 @@ def login_view(request):
 
 
 def register_view(request):
-    """Handle user registration"""
-    if request.user.is_authenticated:
-        return redirect('home')
-    
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
+
         if form.is_valid():
-            user = form.save()
-            # Don't auto-login, redirect to login page instead
-            if user.is_seller:
-                messages.success(request, 'Seller account created successfully! Please login to continue.')
+            user = form.save(commit=False)
+
+            # seller checkbox
+            if request.POST.get('is_seller'):
+                user.is_staff = True
+                messages.success(
+                    request,
+                    'Seller account created successfully! Please login to continue.'
+                )
             else:
-                messages.success(request, 'Account created successfully! Please login to continue.')
-            return redirect('accounts:login')
+                messages.success(
+                    request,
+                    'Account created successfully! Please login to continue.'
+                )
+            user.save()
+            return redirect('accounts:login')   # ✅ ONLY ONE RESPONSE
+
         else:
             messages.error(request, 'Please correct the errors below.')
+
     else:
         form = RegistrationForm()
-    
+
     return render(request, 'accounts/register.html', {'form': form})
 
 
