@@ -31,6 +31,15 @@
                 <span>IndiVibe</span>
             </a>
 
+            <!-- Search Bar -->
+            <form action="{% url 'products:search' %}" method="get" class="navbar-search">
+                <input type="text" name="q" placeholder="Search for products..." class="search-input"
+                    value="{{ request.GET.q }}">
+                <button type="submit" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+
             <ul class="navbar-nav">
                 <li><a href="{% url 'home' %}" class="nav-link">Home</a></li>
                 <li><a href="{% url 'products:product_list' %}" class="nav-link">Products</a></li>
@@ -44,10 +53,6 @@
             </ul>
 
             <div class="nav-icons">
-                <a href="{% url 'products:search' %}" class="nav-icon" title="Search">
-                    <i class="fas fa-search"></i>
-                </a>
-
                 {% if user.is_authenticated %}
                 <a href="{% url 'wishlist:wishlist' %}" class="nav-icon" title="Wishlist">
                     <i class="fas fa-heart"></i>
