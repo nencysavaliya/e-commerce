@@ -9,6 +9,9 @@ def product_list(request):
     products = Product.objects.filter(is_active=True).select_related('category', 'subcategory', 'seller')
     categories = Category.objects.filter(is_active=True)
     
+    # Debug logging
+    print(f"DEBUG: Initial products count: {products.count()}")
+    
     # Search functionality
     query = request.GET.get('q')
     if query:
@@ -17,16 +20,19 @@ def product_list(request):
             Q(description__icontains=query) |
             Q(category__name__icontains=query)
         )
+        print(f"DEBUG: After search filter '{query}', products count: {products.count()}")
     
     # Category filter
     category_slug = request.GET.get('category')
     if category_slug:
         products = products.filter(category__slug=category_slug)
+        print(f"DEBUG: After category filter '{category_slug}', products count: {products.count()}")
     
     # SubCategory filter
     subcategory_slug = request.GET.get('subcategory')
     if subcategory_slug:
         products = products.filter(subcategory__slug=subcategory_slug)
+        print(f"DEBUG: After subcategory filter '{subcategory_slug}', products count: {products.count()}")
     
     # Price range filter
     min_price = request.GET.get('min_price')
@@ -51,6 +57,9 @@ def product_list(request):
     paginator = Paginator(products, 12)
     page = request.GET.get('page')
     products = paginator.get_page(page)
+    
+    print(f"DEBUG: Final products in page: {len(products)}")
+    print(f"DEBUG: Products object list: {products.object_list}")
     
     context = {
         'products': products,
