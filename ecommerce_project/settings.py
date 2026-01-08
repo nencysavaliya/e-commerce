@@ -25,7 +25,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',    
     'django.contrib.staticfiles',
+    'cloudinary',
     
     # IndiVibe Apps
     'accounts',
@@ -112,6 +114,15 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 # આ લાઈન ખાસ ઉમેરજો, આનાથી જ એડમિનની CSS લોડ થશે
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Cloudinary Configuration
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'digkrcqo7',
+    'API_KEY': '283321573533516',
+    'API_SECRET': 'Zww8nLnH8lVU-hDDWFP1SXJbjQk'
+}
+# મીડિયા ફાઈલો માટે Cloudinary સેટ કરો
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Media files (User uploads)
 MEDIA_URL = 'media/'
