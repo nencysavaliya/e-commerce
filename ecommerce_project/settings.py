@@ -152,3 +152,4 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 CSRF_TRUSTED_ORIGINS = [
     "https://e-commerce-production-faad.up.railway.app"
 ]
+
