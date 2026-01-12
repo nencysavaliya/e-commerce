@@ -42,7 +42,7 @@
 
             <a href="{% url 'products:product_detail' slug=product.slug %}">
                 {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img">
+                <img src="{{ product.image }}" alt="{{ product.name }}" class="card-img">
                 {% else %}
                 <div class="card-img"
                     style="background: var(--bg-glass); display: flex; align-items: center; justify-content: center;">
