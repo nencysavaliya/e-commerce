@@ -8,9 +8,11 @@ from .models import Coupon, CouponUsage
 @login_required
 def apply_coupon(request):
     """Apply coupon to cart/order"""
+    from decimal import Decimal
+    
     if request.method == 'POST':
         code = request.POST.get('code', '').strip().upper()
-        order_amount = float(request.POST.get('order_amount', 0))
+        order_amount = Decimal(request.POST.get('order_amount', 0))
         
         try:
             coupon = Coupon.objects.get(code=code)
@@ -62,5 +64,20 @@ def remove_coupon(request):
 def available_coupons(request):
     """List available coupons"""
     from django.utils import timezone
-    coupons = Coupon.objects.filter(is_active=True, expiry_date__gt=timezone.now())
-    return render(request, 'coupons/available_coupons.html', {'coupons': coupons})
+    
+    # Get all active coupons and filter in Python to avoid timezone issues
+    all_coupons = Coupon.objects.filter(is_active=True)
+    current_date = timezone.now().date()
+    
+    # Filter coupons by checking each one with date comparison
+    valid_coupons = []
+    for coupon in all_coupons:
+        if timezone.is_aware(coupon.expiry_date):
+            expiry_date = timezone.localtime(coupon.expiry_date).date()
+        else:
+            expiry_date = coupon.expiry_date.date()
+        
+        if expiry_date >= current_date:
+            valid_coupons.append(coupon)
+    
+    return render(request, 'coupons/available_coupons.html', {'coupons': valid_coupons})

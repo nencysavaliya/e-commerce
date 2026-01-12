@@ -34,11 +34,24 @@ class Coupon(models.Model):
     def is_valid(self, user=None, order_amount=0):
         """Check if coupon is valid"""
         from django.utils import timezone
+        import datetime
         
         if not self.is_active:
             return False, 'Coupon is not active'
         
-        if self.expiry_date < timezone.now():
+        # Get current date in the configured timezone
+        now = timezone.now()
+        current_date = now.date()
+        
+        # Convert expiry_date to date for comparison
+        # This handles both timezone-aware and naive datetimes
+        if timezone.is_aware(self.expiry_date):
+            expiry_date = timezone.localtime(self.expiry_date).date()
+        else:
+            expiry_date = self.expiry_date.date()
+        
+        # Compare dates only (not time) - coupon is valid until end of expiry date
+        if expiry_date < current_date:
             return False, 'Coupon has expired'
         
         if self.usage_limit > 0 and self.times_used >= self.usage_limit:
