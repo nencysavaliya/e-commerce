@@ -116,9 +116,9 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME', default=''),
-    'API_KEY': config('CLOUDINARY_API_KEY', default=''),
-    'API_SECRET': config('CLOUDINARY_API_SECRET', default='')
+    'CLOUD_NAME': 'digkrcqo7',
+    'API_KEY': '283321573533516',
+    'API_SECRET': 'Zww8nLnH8lVU-hDDWFP1SXJbjQk'
 }
 # મીડિયા ફાઈલો માટે Cloudinary સેટ કરો
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
