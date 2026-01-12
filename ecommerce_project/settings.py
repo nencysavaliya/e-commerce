@@ -115,11 +115,10 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 # આ લાઈન ખાસ ઉમેરજો, આનાથી જ એડમિનની CSS લોડ થશે
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Cloudinary Configuration
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': config('CLOUDINARY_API_KEY'),
-    'API_SECRET': config('CLOUDINARY_API_SECRET')
+    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME', default=''),
+    'API_KEY': config('CLOUDINARY_API_KEY', default=''),
+    'API_SECRET': config('CLOUDINARY_API_SECRET', default='')
 }
 # મીડિયા ફાઈલો માટે Cloudinary સેટ કરો
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
