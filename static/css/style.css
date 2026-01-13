@@ -604,6 +604,31 @@ select.form-control option:disabled {
     padding-right: 3rem;
 }
 
+/* Form Error Styles */
+.form-control.is-invalid {
+    border-color: var(--error);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+.field-error {
+    margin-top: 0.5rem;
+    color: var(--error);
+}
+
+.field-error small {
+    display: block;
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.alert-error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid var(--error);
+    color: var(--error);
+    padding: 1rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 1rem;
+}
 
 /* =============== Hero Section =============== */
 .hero {

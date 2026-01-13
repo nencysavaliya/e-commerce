@@ -55,9 +55,7 @@ def register_view(request):
                 )
             return redirect('accounts:login')
 
-        else:
-            messages.error(request, 'Please correct the errors below.')
-
+        # Form errors will be displayed in template
     else:
         form = RegistrationForm()
 

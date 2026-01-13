@@ -30,39 +30,79 @@
             {% endfor %}
             {% endif %}
 
+            {% if form.non_field_errors %}
+            <div class="alert alert-error">
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+
             <form method="post" action="{% url 'accounts:register' %}">
                 {% csrf_token %}
 
                 <div class="form-group">
                     <label class="form-label"><i class="fas fa-user"></i> Username</label>
-                    <input type="text" name="username" class="form-control" placeholder="Choose a username" required>
+                    <input type="text" name="username"
+                        class="form-control {% if form.username.errors %}is-invalid{% endif %}"
+                        placeholder="Choose a username" value="{{ form.username.value|default:'' }}" required>
+                    {% if form.username.errors %}
+                    <div class="field-error">
+                        {% for error in form.username.errors %}
+                        <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
 
                 <div class="form-group">
                     <label class="form-label"><i class="fas fa-envelope"></i> Email</label>
-                    <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+                    <input type="email" name="email"
+                        class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                        placeholder="Enter your email" value="{{ form.email.value|default:'' }}" required>
+                    {% if form.email.errors %}
+                    <div class="field-error">
+                        {% for error in form.email.errors %}
+                        <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
 
                 <div class="form-group">
                     <label class="form-label"><i class="fas fa-lock"></i> Password</label>
                     <div class="password-wrapper">
-                        <input type="password" name="password1" id="reg-password1" class="form-control"
+                        <input type="password" name="password1" id="reg-password1"
+                            class="form-control {% if form.password1.errors %}is-invalid{% endif %}"
                             placeholder="Create a password" required>
                         <button type="button" class="password-toggle" onclick="togglePassword('reg-password1', this)">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
+                    {% if form.password1.errors %}
+                    <div class="field-error">
+                        {% for error in form.password1.errors %}
+                        <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
 
                 <div class="form-group">
                     <label class="form-label"><i class="fas fa-lock"></i> Confirm Password</label>
                     <div class="password-wrapper">
-                        <input type="password" name="password2" id="reg-password2" class="form-control"
+                        <input type="password" name="password2" id="reg-password2"
+                            class="form-control {% if form.password2.errors %}is-invalid{% endif %}"
                             placeholder="Confirm your password" required>
                         <button type="button" class="password-toggle" onclick="togglePassword('reg-password2', this)">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
+                    {% if form.password2.errors %}
+                    <div class="field-error">
+                        {% for error in form.password2.errors %}
+                        <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
 
                 <div class="form-group">
