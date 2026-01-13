@@ -40,7 +40,12 @@
 
                 <div class="form-group">
                     <label class="form-label"><i class="fas fa-lock"></i> Password</label>
-                    <input type="password" name="password" class="form-control" placeholder="Enter password" required>
+                    <div class="password-wrapper">
+                        <input type="password" name="password" id="login-password" class="form-control" placeholder="Enter password" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword('login-password', this)">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
@@ -53,6 +58,23 @@
             </div>
         </div>
     </div>
+
+    <script>
+    function togglePassword(fieldId, button) {
+        const field = document.getElementById(fieldId);
+        const icon = button.querySelector('i');
+        
+        if (field.type === 'password') {
+            field.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            field.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+    </script>
 </body>
 
 </html>

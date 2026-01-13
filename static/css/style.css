@@ -574,6 +574,37 @@ select.form-control option:disabled {
     color: var(--text-secondary);
 }
 
+/* Password Toggle Styles */
+.password-wrapper {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: color var(--transition-fast);
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.password-toggle:hover {
+    color: var(--primary);
+}
+
+.password-wrapper .form-control {
+    padding-right: 3rem;
+}
+
+
 /* =============== Hero Section =============== */
 .hero {
     padding: 4rem 0;
