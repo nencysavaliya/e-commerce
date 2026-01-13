@@ -37,11 +37,13 @@ def register_view(request):
         form = RegistrationForm(request.POST)
 
         if form.is_valid():
-            user = form.save(commit=False)
+            # First save the user with properly hashed password
+            user = form.save()
 
-            # seller checkbox
+            # Then update seller status if needed
             if request.POST.get('is_seller'):
                 user.is_staff = True
+                user.save()  # Save the staff status
                 messages.success(
                     request,
                     'Seller account created successfully! Please login to continue.'
@@ -51,8 +53,7 @@ def register_view(request):
                     request,
                     'Account created successfully! Please login to continue.'
                 )
-            user.save()
-            return redirect('accounts:login')   # ✅ ONLY ONE RESPONSE
+            return redirect('accounts:login')
 
         else:
             messages.error(request, 'Please correct the errors below.')
