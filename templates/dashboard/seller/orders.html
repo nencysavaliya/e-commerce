@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - IndiVibe Seller</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <h2><i class="fas fa-bolt"></i> <span class="gradient-text">IndiVibe</span></h2>
+                <p class="text-muted">Seller Panel</p>
+            </div>
+
+            <ul class="sidebar-nav">
+                <li><a href="{% url 'dashboard:seller_dashboard' %}"><i class="fas fa-home"></i>
+                        Dashboard</a></li>
+                <li><a href="{% url 'dashboard:seller_products' %}"><i class="fas fa-box"></i> My Products</a></li>
+                <li><a href="{% url 'dashboard:seller_add_product' %}"><i class="fas fa-plus"></i> Add Product</a></li>
+                <li><a href="{% url 'dashboard:seller_orders' %}" class="active"><i class="fas fa-shopping-bag"></i> Orders</a></li>
+                <hr style="border-color: rgba(255,255,255,0.1); margin: 1rem 0;">
+                <li><a href="{% url 'home' %}"><i class="fas fa-store"></i> View Store</a></li>
+                <li><a href="{% url 'accounts:profile' %}"><i class="fas fa-user"></i> Profile</a></li>
+                <li><a href="{% url 'accounts:logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-content">
+            <div class="dashboard-header">
+                <h1><i class="fas fa-shopping-bag"></i> My Orders</h1>
+                <p class="text-muted">View and manage orders for your products</p>
+            </div>
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+
+            <div class="card" style="padding: 1.5rem;">
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Order #</th>
+                                <th>Product</th>
+                                <th>Customer</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Payment</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order_items %}
+                            <tr>
+                                <td><strong>{{ item.order.order_number }}</strong></td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        {% if item.product.image %}
+                                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}"
+                                            style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px;">
+                                        {% endif %}
+                                        <span>{{ item.product.name }}</span>
+                                    </div>
+                                </td>
+                                <td>{{ item.order.user.username }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>₹{{ item.price }}</td>
+                                <td>
+                                    <span
+                                        class="badge badge-{% if item.order.payment_status == 'paid' %}success{% else %}warning{% endif %}">
+                                        {{ item.order.payment_status|title }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span
+                                        class="badge badge-{% if item.order.order_status == 'delivered' %}success{% elif item.order.order_status == 'shipped' %}primary{% elif item.order.order_status == 'cancelled' %}danger{% else %}warning{% endif %}">
+                                        {{ item.order.order_status|title }}
+                                    </span>
+                                </td>
+                                <td class="text-muted">{{ item.order.created_at|date:"M d, Y" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center text-muted">No orders yet</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>
