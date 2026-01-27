@@ -66,11 +66,11 @@
 
             <!-- Revenue Stats -->
             <div class="stat-cards" style="grid-template-columns: repeat(2, 1fr);">
-                <div class="stat-card purple">
+                <div class="stat-card revenue-card purple">
                     <h3><i class="fas fa-rupee-sign"></i> Total Revenue</h3>
                     <p class="value" style="color: var(--success);">₹{{ total_revenue }}</p>
                 </div>
-                <div class="stat-card gold">
+                <div class="stat-card revenue-card gold">
                     <h3><i class="fas fa-chart-line"></i> Monthly Revenue</h3>
                     <p class="value" style="color: var(--secondary);">₹{{ monthly_revenue }}</p>
                 </div>
@@ -83,7 +83,8 @@
                     <span class="badge badge-warning"><i class="fas fa-clock"></i> Pending: {{ pending_orders }}</span>
                     <span class="badge badge-info"><i class="fas fa-check"></i> Confirmed: {{ confirmed_orders }}</span>
                     <span class="badge badge-primary"><i class="fas fa-truck"></i> Shipped: {{ shipped_orders }}</span>
-                    <span class="badge badge-success"><i class="fas fa-check-double"></i> Delivered: {{ delivered_orders }}</span>  
+                    <span class="badge badge-success"><i class="fas fa-check-double"></i> Delivered: {{ delivered_orders
+                        }}</span>
                 </div>
             </div>
 
