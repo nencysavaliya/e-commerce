@@ -14,13 +14,6 @@
                     <i class="fas fa-search"></i>
                 </button>
             </form>
-            <select name="sort" class="form-control" style="width: 150px;"
-                onchange="window.location.href='?sort='+this.value">
-                <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>
-                <option value="price_low" {% if current_sort == 'price_low' %}selected{% endif %}>
-                <option value="price_high" {% if current_sort == 'price_high' %}selected{% endif %}>
-                <option value="name" {% if current_sort == 'name' %}selected{% endif %}>
-            </select>
         </div>
     </div>
 
@@ -67,7 +60,8 @@
                 <div class="d-flex gap-1 mt-2">
                     <form action="{% url 'cart:add' product.id %}" method="post" style="flex: 1;">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;" {% if not product.in_stock %} disabled{% endif %}> 
+                        <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;" {% if not
+                            product.in_stock %} disabled{% endif %}>
                             {% if product.in_stock %}
                             <i class="fas fa-cart-plus"></i> Add to Cart
                             {% else %}
