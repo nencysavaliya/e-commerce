@@ -693,6 +693,127 @@ select.form-control option:disabled {
     margin-bottom: 1rem;
 }
 
+/* =============== Feature Cards (Top Section - Free Shipping, etc.) =============== */
+.feature-card {
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(245, 158, 11, 0.1));
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-15px) scale(1.05);
+    box-shadow: 0 20px 40px rgba(124, 58, 237, 0.4), 0 0 30px rgba(124, 58, 237, 0.3);
+    border-color: var(--primary);
+}
+
+.feature-card:hover::before {
+    opacity: 1;
+}
+
+.feature-card i {
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    display: inline-block;
+}
+
+.feature-card:hover i {
+    transform: translateY(-10px) rotate(360deg) scale(1.2);
+    filter: drop-shadow(0 0 20px currentColor);
+}
+
+.feature-card h4 {
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover h4 {
+    color: var(--secondary);
+    transform: scale(1.1);
+}
+
+.feature-card p {
+    position: relative;
+    z-index: 1;
+}
+
+/* =============== Category Cards (Bottom Section - Fashion, etc.) =============== */
+.category-card {
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+.category-card::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.3), transparent);
+    transform: translate(-50%, -50%);
+    transition: all 0.6s ease;
+}
+
+.category-card:hover::after {
+    width: 300%;
+    height: 300%;
+}
+
+.category-card:hover {
+    transform: scale(1.1) rotate(-3deg);
+    box-shadow: 0 15px 35px rgba(245, 158, 11, 0.5), 0 5px 15px rgba(245, 158, 11, 0.3);
+    border-color: var(--secondary);
+}
+
+.category-card i {
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    display: inline-block;
+    position: relative;
+    z-index: 2;
+}
+
+.category-card:hover i {
+    transform: scale(1.3) rotateY(360deg);
+    filter: drop-shadow(0 5px 15px currentColor);
+}
+
+.category-card h4,
+.category-card p {
+    position: relative;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.category-card:hover h4 {
+    color: var(--secondary);
+    text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+}
+
+.category-card:hover p {
+    transform: translateY(-5px);
+    color: var(--text-primary);
+}
+
+
 /* =============== Product Detail =============== */
 .product-detail {
     display: grid;
