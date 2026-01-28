@@ -60,8 +60,7 @@
                 <div class="d-flex gap-1 mt-2">
                     <form action="{% url 'cart:add' product.id %}" method="post" style="flex: 1;">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;" {% if not
-                            product.in_stock %} disabled{% endif %}>
+                        <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;" {% if not product.in_stock %}disabled{% endif %}>
                             {% if product.in_stock %}
                             <i class="fas fa-cart-plus"></i> Add to Cart
                             {% else %}
