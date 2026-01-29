@@ -30,10 +30,33 @@
     </div>
 </section>
 
-<!-- Features Section -->
-<section class="section" style="background: var(--bg-secondary);">
-    <div class="container">
-        <div class="grid grid-4">
+<!-- Features Section with Auto-Scroll -->
+<section class="section" style="background: var(--bg-secondary); overflow: hidden;">
+    <div class="features-scroll-container">
+        <div class="features-scroll-track">
+            <!-- First Set of Cards -->
+            <div class="card feature-card">
+                <i class="fas fa-truck" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                <h4>Free Shipping</h4>
+                <p class="text-muted">On orders over ₹499</p>
+            </div>
+            <div class="card feature-card">
+                <i class="fas fa-undo" style="font-size: 2.5rem; color: var(--secondary); margin-bottom: 1rem;"></i>
+                <h4>Easy Returns</h4>
+                <p class="text-muted">7-day return policy</p>
+            </div>
+            <div class="card feature-card">
+                <i class="fas fa-shield-alt" style="font-size: 2.5rem; color: var(--success); margin-bottom: 1rem;"></i>
+                <h4>Secure Payment</h4>
+                <p class="text-muted">100% secure checkout</p>
+            </div>
+            <div class="card feature-card">
+                <i class="fas fa-headset" style="font-size: 2.5rem; color: var(--info); margin-bottom: 1rem;"></i>
+                <h4>24/7 Support</h4>
+                <p class="text-muted">Dedicated support</p>
+            </div>
+
+            <!-- Duplicated Set for Seamless Loop -->
             <div class="card feature-card">
                 <i class="fas fa-truck" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
                 <h4>Free Shipping</h4>

@@ -759,6 +759,76 @@ select.form-control option:disabled {
     opacity: 1;
 }
 
+/* =============== Auto-Scrolling Feature Cards Animation =============== */
+.features-scroll-container {
+    width: 100%;
+    overflow: hidden;
+    padding: 2rem 0;
+}
+
+.features-scroll-track {
+    display: flex;
+    gap: 1.5rem;
+    animation: scroll-left 30s linear infinite;
+    width: fit-content;
+}
+
+/* Pause animation on hover of any feature card */
+.features-scroll-track:hover {
+    animation-play-state: paused;
+}
+
+/* Individual card hover doesn't interrupt the entire track */
+.features-scroll-track .feature-card {
+    flex-shrink: 0;
+    width: 280px;
+}
+
+/* Keyframe animation for continuous right-to-left scroll */
+@keyframes scroll-left {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        /* Move exactly half the width (4 cards + gaps) to create seamless loop */
+        transform: translateX(calc(-280px * 4 - 1.5rem * 4));
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .features-scroll-track .feature-card {
+        width: 240px;
+    }
+
+    @keyframes scroll-left {
+        0% {
+            transform: translateX(0);
+        }
+
+        100% {
+            transform: translateX(calc(-240px * 4 - 1.5rem * 4));
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .features-scroll-track .feature-card {
+        width: 200px;
+    }
+
+    @keyframes scroll-left {
+        0% {
+            transform: translateX(0);
+        }
+
+        100% {
+            transform: translateX(calc(-200px * 4 - 1.5rem * 4));
+        }
+    }
+}
+
 
 /* =============== Category Cards (Bottom Section - Fashion, etc.) =============== */
 .category-card {
