@@ -31,8 +31,8 @@
             <div class="product-rating">
                 <div class="stars">
                     {% for i in "12345" %}
-                    {% if forloop.counter <= product.average_rating|floatformat:0|default:0 %}
-                     <i class="fas fa-star"></i>    
+                    {% if forloop.counter <= product.average_rating|floatformat:0|default:0 %} <i class="fas fa-star">
+                        </i>
                         {% else %}
                         <i class="far fa-star"></i>
                         {% endif %}
@@ -93,7 +93,8 @@
 
             <!-- Seller Info -->
             <div class="mt-4" style="padding: 1rem; background: var(--bg-glass); border-radius: var(--radius-md);">
-                <p class="text-muted"><i class="fas fa-store"></i> Sold by: <strong>{{ product.seller.username }}</strong></p>             
+                <p class="text-muted"><i class="fas fa-store"></i> Sold by: <strong>{{ product.seller.username
+                        }}</strong></p>
             </div>
         </div>
     </div>
@@ -164,8 +165,8 @@
         const input = document.getElementById('qty');
         let val = parseInt(input.value) + delta;
         if (val < 1) val = 1;
-        if (val > {{ product.stock }
-    }) val = {{ product.stock }};
+        if (val > {{ product.stock }})
+     val = {{ product.stock }};
     input.value = val;
 }
 </script>
