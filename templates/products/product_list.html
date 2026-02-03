@@ -17,6 +17,76 @@
         </div>
     </div>
 
+    <!-- Category Section -->
+    <div class="categories-section">
+        <div class="categories-container">
+            <div class="category-box">
+                <a href="{% url 'products:product_list' %}?category=ethnic-wear">
+                    <div class="category-circle">
+                        <i class="fas fa-tshirt"></i>
+                    </div>
+                    <p>Ethnic Wear</p>
+                </a>
+            </div>
+            <div class="category-box">
+                <a href="{% url 'products:product_list' %}?category=western-dresses">
+                    <div class="category-circle">
+                        <i class="fas fa-dress"></i>
+                    </div>
+                    <p>Western Dresses</p>
+                </a>
+            </div>
+            <div class="category-box">
+                <a href="{% url 'products:product_list' %}?category=menswear">
+                    <div class="category-circle">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <p>Menswear</p>
+                </a>
+            </div>
+            <div class="category-box">
+                <a href="{% url 'products:product_list' %}?category=footwear">
+                    <div class="category-circle">
+                        <i class="fas fa-shoe-prints"></i>
+                    </div>
+                    <p>Footwear</p>
+                </a>
+            </div>
+            <div class="category-box">
+                <a href="{% url 'products:product_list' %}?category=home-decor">
+                    <div class="category-circle">
+                        <i class="fas fa-couch"></i>
+                    </div>
+                    <p>Home Decor</p>
+                </a>
+            </div>
+            <div class="category-box">
+                <a href="{% url 'products:product_list' %}?category=beauty">
+                    <div class="category-circle">
+                        <i class="fas fa-spa"></i>
+                    </div>
+                    <p>Beauty</p>
+                </a>
+            </div>
+            <div class="category-box">
+                <a href="{% url 'products:product_list' %}?category=accessories">
+                    <div class="category-circle">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <p>Accessories</p>
+                </a>
+            </div>
+            <div class="category-box">
+                <a href="{% url 'products:product_list' %}?category=grocery">
+                    <div class="category-circle">
+                        <i class="fas fa-shopping-basket"></i>
+                    </div>
+                    <p>Grocery</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
     {% if products %}
     <div class="grid grid-4">
         {% for product in products %}
@@ -60,7 +130,8 @@
                 <div class="d-flex gap-1 mt-2">
                     <form action="{% url 'cart:add' product.id %}" method="post" style="flex: 1;">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;" {% if not product.in_stock %}disabled{% endif %}>
+                        <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;" {% if not
+                            product.in_stock %}disabled{% endif %}>
                             {% if product.in_stock %}
                             <i class="fas fa-cart-plus"></i> Add to Cart
                             {% else %}
